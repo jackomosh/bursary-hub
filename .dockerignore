@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules
+frontend
+contracts
+db
+scripts
+cmd/dbtest
+cmd/migrate
+*.md
+.env
+.env.local
+*.log

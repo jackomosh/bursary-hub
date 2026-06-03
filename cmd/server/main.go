@@ -84,6 +84,12 @@ func main() {
 	api.HandleFunc("/admin/mismatches/{id}/resolve", handlers.ResolveMismatch).Methods("POST")
 
 	log.Println("Connected to database successfully")
-	log.Println("Server listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	
+	log.Printf("Server listening on :%s\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
