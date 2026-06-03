@@ -49,40 +49,41 @@ func main() {
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(middleware.AuthMiddleware)
 
-	// Admin routes
-	api.HandleFunc("/admin/users", handlers.GetAllUsers).Methods("GET")
-	api.HandleFunc("/admin/users/{id}", handlers.DeleteUser).Methods("DELETE")
-	api.HandleFunc("/admin/donors", handlers.GetAllDonors).Methods("GET")
-	api.HandleFunc("/admin/schools", handlers.GetAllSchools).Methods("GET")
-	api.HandleFunc("/admin/students", handlers.GetAllStudents).Methods("GET")
-
 	// Donor routes
-	api.HandleFunc("/donors", handlers.CreateDonor).Methods("POST")
-	api.HandleFunc("/donors", handlers.GetDonors).Methods("GET")
-	api.HandleFunc("/donors/{id}", handlers.GetDonor).Methods("GET")
-	api.HandleFunc("/donors/{id}", handlers.UpdateDonor).Methods("PUT")
-	api.HandleFunc("/donors/{id}/contributions", handlers.GetDonorContributions).Methods("GET")
+	api.HandleFunc("/donor/scholarships", handlers.CreateScholarship).Methods("POST")
+	api.HandleFunc("/donor/scholarships", handlers.GetDonorScholarships).Methods("GET")
+	api.HandleFunc("/donor/scholarships/{id}/applications", handlers.GetScholarshipApplications).Methods("GET")
+	api.HandleFunc("/donor/scholarships/{id}/applications/{appId}/approve", handlers.ApproveApplication).Methods("POST")
+	api.HandleFunc("/donor/disbursements", handlers.GetDonorDisbursements).Methods("GET")
+	api.HandleFunc("/donor/impact-report", handlers.GetImpactReport).Methods("GET")
+	api.HandleFunc("/donor/cost-breakdown", handlers.GetCostBreakdown).Methods("GET")
 
 	// School routes
-	api.HandleFunc("/schools", handlers.CreateSchool).Methods("POST")
-	api.HandleFunc("/schools", handlers.GetSchools).Methods("GET")
-	api.HandleFunc("/schools/{id}", handlers.GetSchool).Methods("GET")
-	api.HandleFunc("/schools/{id}", handlers.UpdateSchool).Methods("PUT")
+	api.HandleFunc("/school/fee-master", handlers.CreateFeeMaster).Methods("POST")
+	api.HandleFunc("/school/fee-master/bulk-update", handlers.BulkUpdateFeeMaster).Methods("POST")
+	api.HandleFunc("/school/students/{id}/balance", handlers.UpdateStudentBalance).Methods("PUT")
+	api.HandleFunc("/school/claims", handlers.CreatePaymentClaim).Methods("POST")
+	api.HandleFunc("/school/claims", handlers.GetPaymentClaims).Methods("GET")
+	api.HandleFunc("/school/roster/upload", handlers.UploadRoster).Methods("POST")
+	api.HandleFunc("/school/three-way-verify", handlers.SchoolThreeWayVerify).Methods("POST")
+	api.HandleFunc("/school/disbursements", handlers.GetSchoolDisbursements).Methods("GET")
 
 	// Student routes
-	api.HandleFunc("/students", handlers.CreateStudent).Methods("POST")
-	api.HandleFunc("/students", handlers.GetStudents).Methods("GET")
-	api.HandleFunc("/students/{id}", handlers.GetStudent).Methods("GET")
-	api.HandleFunc("/students/{id}", handlers.UpdateStudent).Methods("PUT")
-	api.HandleFunc("/students/{id}/fees", handlers.GetStudentFees).Methods("GET")
+	api.HandleFunc("/student/scholarships", handlers.GetAvailableScholarships).Methods("GET")
+	api.HandleFunc("/student/scholarships/{id}/apply", handlers.ApplyForScholarship).Methods("POST")
+	api.HandleFunc("/student/balance", handlers.GetStudentBalance).Methods("GET")
+	api.HandleFunc("/student/three-way-verify", handlers.StudentThreeWayVerify).Methods("POST")
+	api.HandleFunc("/student/claims/{id}/approve", handlers.ApproveClaimWithOTP).Methods("POST")
+	api.HandleFunc("/student/claims/{id}/request-otp", handlers.RequestOTP).Methods("POST")
+	api.HandleFunc("/student/disbursements", handlers.GetStudentDisbursements).Methods("GET")
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	// Admin routes
+	api.HandleFunc("/admin/schools/{id}/whitelist", handlers.WhitelistSchool).Methods("POST")
+	api.HandleFunc("/admin/donors/{id}/kyc", handlers.ApproveDonorKYC).Methods("POST")
+	api.HandleFunc("/admin/mismatches", handlers.GetMismatches).Methods("GET")
+	api.HandleFunc("/admin/mismatches/{id}/resolve", handlers.ResolveMismatch).Methods("POST")
 
-	log.Printf("Server starting on port %s\n", port)
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		log.Fatal(err)
-	}
+	log.Println("Connected to database successfully")
+	log.Println("Server listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
