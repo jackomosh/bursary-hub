@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - BursaryHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Section 1: Header -->
+    <header class="bg-white shadow-sm">
+        <div class="px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold text-indigo-600">BursaryHub</h1>
+                    <p class="text-gray-600">John Doe</p>
+                    <p class="text-gray-600">University of Nairobi</p>
+                </div>
+                <div class="relative">
+                    <span class="text-2xl cursor-pointer">☰</span>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">3 NEW</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="px-4 py-6 space-y-6">
+        <!-- Section 2: Available Scholarships -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4">
+                <h2 class="text-lg font-semibold mb-2">🎓 NEW SCHOLARSHIP AVAILABLE</h2>
+                <p class="font-bold">Tech Scholars 2024</p>
+                <p class="text-sm text-gray-600">Covers Tuition up to 55,000 KSH</p>
+                <p class="text-sm text-gray-600">Apply by June 30, 2026</p>
+                <button onclick="applyScholarship()" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded-md">APPLY NOW</button>
+            </div>
+        </div>
+
+        <!-- Section 3: My Applications -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-semibold">My Applications</h2>
+            </div>
+            <div class="p-4">
+                <div class="flex justify-between items-center py-2 border-b">
+                    <span class="font-medium">Tech Scholars 2024</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Approved</span>
+                    <span class="font-bold">55K</span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span class="font-medium">Girls in STEM</span>
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm">Pending</span>
+                    <span class="text-gray-400">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Step 1 - Confirm Your Balance -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-semibold">STEP 1: CONFIRM YOUR BALANCE</h2>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Current Fee Owed (KSH)</label>
+                    <input type="number" id="balance-amount" value="55000" class="w-full px-3 py-2 border rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Fee Statement Upload</label>
+                    <input type="file" class="w-full px-3 py-2 border rounded-md">
+                </div>
+                <button onclick="submitBalance()" class="w-full py-2 bg-indigo-600 text-white rounded-md">SUBMIT MY BALANCE</button>
+                
+                <div id="verification-status" class="mt-4 p-4 bg-green-50 rounded-md hidden">
+                    <p class="text-green-800">
+                        ✓ You entered: 55,000 KSH<br>
+                        ✓ School says: 55,000 KSH<br>
+                        ✓ Fee master says: 55,000 KSH<br>
+                        ✅ MATCHED! Ready for approval
+                    </p>
+                </div>
+                <div id="waiting-status" class="mt-4 p-4 bg-yellow-50 rounded-md hidden">
+                    <p class="text-yellow-800">⏳ Waiting for school verification</p>
+                </div>
+                <div id="mismatch-status" class="mt-4 p-4 bg-red-50 rounded-md hidden">
+                    <p class="text-red-800">❌ MISMATCH: Your amount does not match school records.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Step 2 - Approve Payment -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-semibold">STEP 2: APPROVE PAYMENT</h2>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <p class="text-sm"><span class="font-medium">School:</span> University of Nairobi</p>
+                    <p class="text-sm"><span class="font-medium">Amount:</span> 55,000 KSH</p>
+                    <p class="text-sm"><span class="font-medium">Coverage:</span> Tuition - Year 1 CS</p>
+                </div>
+                <button id="request-otp-btn" onclick="requestOTP()" class="w-full py-2 bg-indigo-600 text-white rounded-md mb-4">REQUEST OTP</button>
+                <div id="otp-section" class="hidden">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">OTP (6 digits)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="otp-input" maxlength="6" class="flex-1 px-3 py-2 border rounded-md text-center text-2xl">
+                            <span id="countdown" class="self-center text-sm text-gray-600">5:00</span>
+                        </div>
+                    </div>
+                    <button onclick="verifyAndApprove()" class="w-full py-2 bg-green-600 text-white rounded-md">VERIFY & APPROVE</button>
+                </div>
+                <div id="approval-success" class="hidden mt-4 p-4 bg-green-50 rounded-md">
+                    <p class="text-green-800">✅ Payment approved! Funds will be sent to the school.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Payment History -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-lg font-semibold">Payment History</h2>
+                <button class="text-indigo-600 text-sm">VIEW ALL</button>
+            </div>
+            <div class="p-4">
+                <div class="flex justify-between items-center py-2 border-b">
+                    <span>May 28, 2026</span>
+                    <span>Tuition</span>
+                    <span>55,000 KSH</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Completed</span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span>Jan 15, 2026</span>
+                    <span>Tuition</span>
+                    <span>50,000 KSH</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Help & Support -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <button class="text-indigo-600">Contact Support</button>
+                    <button class="text-indigo-600">FAQ</button>
+                    <span class="text-gray-500">v1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>
